@@ -1,5 +1,5 @@
 // Укажите URL вашего бекенда (после деплоя)
-const API_URL = 'https://your-backend-url.com/api/report';
+const API_URL = 'https://zhaloba.onrender.com/api/report';
 
 document.addEventListener('DOMContentLoaded', () => {
     const reportBtn = document.getElementById('reportBtn');

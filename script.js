@@ -1,14 +1,18 @@
 const API_URL = 'https://zhaloba.onrender.com/api/report';
 const API_COMPLAINTS_URL = 'https://zhaloba.onrender.com/api/complaints';
 
+function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const reportBtn = document.getElementById('reportBtn');
     const countSpan = document.getElementById('count');
     const messageDiv = document.getElementById('message');
-    const complaintsSection = document.getElementById('complaintsSection');
     const complaintsList = document.getElementById('complaintsList');
 
-    // Загружаем текущий счетчик
     loadCount();
     loadComplaints();
 
@@ -22,7 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({ text: 'Жалоба' })
             });
 
             if (!response.ok) {
@@ -33,8 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             countSpan.textContent = data.count;
             messageDiv.textContent = 'Спасибо! Жалоба отправлена.';
             messageDiv.className = 'message';
-            
-            // Перезагружаем список жалоб
+
             loadComplaints();
         } catch (error) {
             messageDiv.textContent = 'Ошибка. Попробуйте позже.';
@@ -72,46 +76,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    reportBtn.addEventListener('click', async () => {
-        reportBtn.disabled = true;
-        messageDiv.textContent = '';
-        messageDiv.className = 'message';
-
-        try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Ошибка при отправке');
-            }
-
-            const data = await response.json();
-            countSpan.textContent = data.count;
-            messageDiv.textContent = 'Спасибо! Жалоба отправлена.';
-            messageDiv.className = 'message';
-            
-            // Перезагружаем список жалоб
-            loadComplaints();
-        } catch (error) {
-            messageDiv.textContent = 'Ошибка. Попробуйте позже.';
-            messageDiv.className = 'message error';
-            console.error('Error:', error);
-        } finally {
-            reportBtn.disabled = false;
-        }
-    });
-
     function displayComplaints(complaints) {
         if (!complaintsList) return;
-        
+
         complaintsList.innerHTML = complaints.map(complaint => `
             <div class="complaint-item">
-                <div class="complaint-date">${complaint.timestamp}</div>
-                <div class="complaint-text">${complaint.text}</div>
+                <div class="complaint-date">${escapeHtml(complaint.timestamp)}</div>
+                <div class="complaint-text">${escapeHtml(complaint.text)}</div>
             </div>
         `).join('');
     }

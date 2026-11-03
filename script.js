@@ -9,6 +9,7 @@ function escapeHtml(s) {
 
 document.addEventListener('DOMContentLoaded', () => {
     const reportBtn = document.getElementById('reportBtn');
+    const complaintText = document.getElementById('complaintText');
     const countSpan = document.getElementById('count');
     const messageDiv = document.getElementById('message');
     const complaintsList = document.getElementById('complaintsList');
@@ -17,6 +18,14 @@ document.addEventListener('DOMContentLoaded', () => {
     loadComplaints();
 
     reportBtn.addEventListener('click', async () => {
+        const text = complaintText.value.trim();
+
+        if (!text) {
+            messageDiv.textContent = 'Напиши текст жалобы.';
+            messageDiv.className = 'message error';
+            return;
+        }
+
         reportBtn.disabled = true;
         messageDiv.textContent = '';
         messageDiv.className = 'message';
@@ -27,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ text: 'Жалоба' })
+                body: JSON.stringify({ text })
             });
 
             if (!response.ok) {
@@ -38,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             countSpan.textContent = data.count;
             messageDiv.textContent = 'Спасибо! Жалоба отправлена.';
             messageDiv.className = 'message';
+            complaintText.value = '';
 
             loadComplaints();
         } catch (error) {

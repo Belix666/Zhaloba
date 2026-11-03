@@ -1,5 +1,5 @@
-const API_URL = 'https://report-backend-xxxxx.onrender.com/api/report';
-const API_COMPLAINTS_URL = 'https://report-backend-xxxxx.onrender.com/api/complaints';
+const API_URL = 'https://zhaloba.onrender.com/api/complaints';
+const API_COMPLAINTS_URL = 'https://zhaloba.onrender.com/api/complaints';
 
 document.addEventListener('DOMContentLoaded', () => {
     const reportBtn = document.getElementById('reportBtn');
